@@ -6,4 +6,4 @@ This page uses a convolutional neural network to predict the digit.
 
 Here is the result:
 
-https://mnistplayground.herokuapp.com/
+<a href="https://mnistplayground.herokuapp.com/" target="_blank">MNIST Playground</a>
