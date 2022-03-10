@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
     <head>
         <title>MNIST Playground</title>
@@ -30,113 +30,177 @@
                 </div>
             </div>
         </nav>
-        <div >
-            <canvas id="can" width="200" height="200" style="position:absolute;top:10%;left:50%;margin-left: -100px;border:2px solid;"></canvas>
-            <img id="canvasimg" style="position:absolute;top:10%;left:52%;" style="display:none;"/>
-            <input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:35%;left:50%;margin-left: -100px;"/>
-            
-        </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <!--<script src="{{ url_for('static', filename='js/index.js') }}"></script>-->
-        <script>
-            var canvas, ctx = false
-            var x = "black", y = 2;
-            var pixels = [];
-            function init() {
-                canvas = document.getElementById('can');
-                ctx = canvas.getContext("2d");
-                w = canvas.width;
-                h = canvas.height;
-
-                pixels = [];
-                for (var i = 0; i < 28*28; i++) pixels[i] = 0;
-                var click = 0;
-                var canvas = document.querySelector("canvas");
-                canvas.addEventListener("mousemove", function(e){
-                    if (e.buttons == 1) {
+        <div id="main">
+            <div id="canvasrow">
+                <div id="canvasdiv">
+                    <canvas id="can" width="200"; height="200";></canvas>
+                    <img id="canvasimg"/>
+                </div>
+                
+                <div id="probabilities">
+                    <p id="prob_text"></p>
+                    <div id="prob_nums">
+                        <div>
+                            <p id="0"></p>
+                            <p id="1"></p>
+                            <p id="2"></p>
+                            <p id="3"></p>
+                            <p id="4"></p>
+                        </div>
+                        <div>
+                            <p id="5"></p>
+                            <p id="6"></p>
+                            <p id="7"></p>
+                            <p id="8"></p>
+                            <p id="9"></p>
+                        </div>
+                    </div>
                     
-                        click = 1;
-                        canvas.getContext("2d").fillStyle = "rgb(0,0,0)";
-                        canvas.getContext("2d").fillRect(e.offsetX, e.offsetY, 10, 10);
-                        x = Math.floor(e.offsetY * 0.14);
-                        y = Math.floor(e.offsetX * 0.14) + 1;
-                        for (var dy = 0; dy < 2; dy++){
-                            for (var dx = 0; dx < 2; dx++){
-                                if ((x + dx < 28) && (y + dy < 28)){
-                                    pixels[(y+dy)+(x+dx)*28] = 1;
+                    
+    
+                </div>
+            </div>
+            
+            <div id="result">
+                <input type="button" value="clear" id="clr" size="23" onclick="erase()"/>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+                <!--<script src="{{ url_for('static', filename='js/index.js') }}"></script>-->
+                <script>
+                    var canvas, ctx = false
+                    var x = "black", y = 2;
+                    var pixels = [];
+                    function init() {
+                        canvas = document.getElementById('can');
+                        ctx = canvas.getContext("2d");
+                        w = canvas.width;
+                        h = canvas.height;
+
+                        pixels = [];
+                        for (var i = 0; i < 28*28; i++) pixels[i] = 0;
+                        var click = 0;
+                        var canvas = document.querySelector("canvas");
+                        canvas.addEventListener("mousemove", function(e){
+                            if (e.buttons == 1) {
+                            
+                                click = 1;
+                                canvas.getContext("2d").fillStyle = "rgb(0,0,0)";
+                                canvas.getContext("2d").fillRect(e.offsetX, e.offsetY, 10, 10);
+                                x = Math.floor(e.offsetY * 0.14);
+                                y = Math.floor(e.offsetX * 0.14) + 1;
+                                for (var dy = 0; dy < 2; dy++){
+                                    for (var dx = 0; dx < 2; dx++){
+                                        if ((x + dx < 28) && (y + dy < 28)){
+                                            pixels[(y+dy)+(x+dx)*28] = 1;
+                                        }
+                                    }
+                                }
+                                console.log(x, y)
+                            } else {
+                                if (click == 1) set_value(pixels); 
+                                click = 0;
+                            }
+                        });
+                        canvas.addEventListener("touchmove", function(e){
+                            e.preventDefault();
+                            var touch = e.touches[0];
+                            click = 1;
+                            var bcr = e.target.getBoundingClientRect();
+                            var offX = e.targetTouches[0].clientX - bcr.x;
+                            var offY = e.targetTouches[0].clientY - bcr.y;
+                            canvas.getContext("2d").fillStyle = "rgb(0,0,0)";
+                            canvas.getContext("2d").fillRect(offX , offY , 10, 10);
+                            x = Math.floor(offX * 0.14);
+                            y = Math.floor(offY * 0.14) + 1;
+                            for (var dy = 0; dy < 2; dy++){
+                                for (var dx = 0; dx < 2; dx++){
+                                    if ((x + dx < 28) && (y + dy < 28)){
+                                        pixels[(y+dy)*28+(x+dx)] = 1;
+                                    }
                                 }
                             }
+                            console.log(x, y)
+                            
+                            
+                            
+                        });
+
+                        canvas.addEventListener("touchend", function(g){
+                            
+                            set_value(pixels);
+                                
+                        });
+
+
+
+
+                    }
+
+                    function set_value(pixels){
+                        var result = "[["
+                        for (var i = 0; i < 28; i++) {
+                            result += "["
+                            for (var j = 0; j < 28; j++) {
+                                result += pixels[i * 28 + j]
+                                if (j < 27) {
+                                    result += ", "
+                                }
+                            }
+                            result += "]"
+                            if (i < 27) {
+                                result += ", "
+                            }
                         }
-                    } else {
-                        if (click == 1) set_value(pixels); 
-                        click = 0;
+                        result += "]]"
+                        postData(datos=result)
                     }
-                });
-            }
 
-            function set_value(pixels){
-                var result = "[["
-                for (var i = 0; i < 28; i++) {
-                    result += "["
-                    for (var j = 0; j < 28; j++) {
-                        result += pixels[i * 28 + j]
-                        if (j < 27) {
-                            result += ", "
-                        }
+                    function erase() {
+                        ctx.clearRect(0, 0, w, h);
+                        document.getElementById("canvasimg").style.display = "none";
+                        for (var i = 0; i < 28*28; i++) pixels[i] = 0;
+                        set_value(pixels);
+                        init();
                     }
-                    result += "]"
-                    if (i < 27) {
-                        result += ", "
+
+                    function postData(datos) {
+                        $.ajax({
+                            type: 'POST',
+                            url: "{{url_for('predict')}}",
+                            data: JSON.stringify(datos),
+                            dataType: 'json',
+                            contentType: 'application/json; charset=utf-8'
+                        }).done(function(msg) {
+                            document.getElementById('pred_text').innerHTML = msg['pred_text']
+                            document.getElementById('prob_text').innerHTML = msg['prob_text']
+                            document.getElementById('prediction').innerHTML = msg['prediction']
+                            document.getElementById('0').innerHTML = msg['0']
+                            document.getElementById('1').innerHTML = msg['1']
+                            document.getElementById('2').innerHTML = msg['2']
+                            document.getElementById('3').innerHTML = msg['3']
+                            document.getElementById('4').innerHTML = msg['4']
+                            document.getElementById('5').innerHTML = msg['5']
+                            document.getElementById('6').innerHTML = msg['6']
+                            document.getElementById('7').innerHTML = msg['7']
+                            document.getElementById('8').innerHTML = msg['8']
+                            document.getElementById('9').innerHTML = msg['9']
+                        });
                     }
-                }
-                result += "]]"
-                postData(datos=result)
-            }
-
-            function erase() {
-                ctx.clearRect(0, 0, w, h);
-                document.getElementById("canvasimg").style.display = "none";
-                for (var i = 0; i < 28*28; i++) pixels[i] = 0;
-                set_value(pixels);
-                init();
-            }
-
-            function postData(datos) {
-                $.ajax({
-                    type: 'POST',
-                    url: "{{url_for('predict')}}",
-                    data: JSON.stringify(datos),
-                    dataType: 'json',
-                    contentType: 'application/json; charset=utf-8'
-                }).done(function(msg) {
-                    document.getElementById('pred_text').innerHTML = msg['pred_text']
-                    document.getElementById('prob_text').innerHTML = msg['prob_text']
-                    document.getElementById('prediction').innerHTML = msg['prediction']
-                    document.getElementById('0').innerHTML = msg['0']
-                    document.getElementById('1').innerHTML = msg['1']
-                    document.getElementById('2').innerHTML = msg['2']
-                    document.getElementById('3').innerHTML = msg['3']
-                    document.getElementById('4').innerHTML = msg['4']
-                    document.getElementById('5').innerHTML = msg['5']
-                    document.getElementById('6').innerHTML = msg['6']
-                    document.getElementById('7').innerHTML = msg['7']
-                    document.getElementById('8').innerHTML = msg['8']
-                    document.getElementById('9').innerHTML = msg['9']
-                });
-            }
-        </script>
-        <p id="pred_text" style="position:absolute;top:40%;left:50%;margin-left: -100px;"></p>
-        <p id="prediction" style="position:absolute;top:42%;left:50%;margin-left: -28px;font-size: 100px;"></p>
-        <p id="prob_text" style="position:absolute;top:10%;left:60%;"></p>
-        <p id="0" style="position:absolute;top:13%;left:60%;"></p>
-        <p id="1" style="position:absolute;top:15%;left:60%;"></p>
-        <p id="2" style="position:absolute;top:17%;left:60%;"></p>
-        <p id="3" style="position:absolute;top:19%;left:60%;"></p>
-        <p id="4" style="position:absolute;top:21%;left:60%;"></p>
-        <p id="5" style="position:absolute;top:23%;left:60%;"></p>
-        <p id="6" style="position:absolute;top:25%;left:60%;"></p>
-        <p id="7" style="position:absolute;top:27%;left:60%;"></p>
-        <p id="8" style="position:absolute;top:29%;left:60%;"></p>
-        <p id="9" style="position:absolute;top:31%;left:60%;"></p>
+                </script>
+                <div id="last">
+                    <p id="pred_text"></p>
+                    <p id="prediction"></p>
+                </div>
+                
+            </div>
+            
+        </div>
+        
+        
     </body>
 </html>
+
+
+
+
+
+

@@ -117,3 +117,71 @@ body {
     font-size: 20px;
     text-align: center;
 }
+
+#main {
+    padding: 10px;
+    padding-left: 10%;
+}
+
+#canvasrow {
+    display: flex;
+    
+}
+
+#canvasdiv {
+    display: flex;
+    margin: 10px;
+    margin-bottom: 0;
+}
+
+#canvasimg {
+    display: none;
+}
+
+#result {
+    margin: 10px;
+    margin-top: 0px;
+}
+
+#probabilities {
+    height: 204px;
+    margin: 10px;
+    margin-bottom: 0px;
+    padding: 20px;
+}
+
+#prob_nums {
+    display: flex;
+}
+
+#probabilities p {
+    
+    font-size: 1em;
+    margin-bottom: 0px;
+}
+
+#probabilities div {
+    padding: 5px 25px;
+    padding-left: 0px;
+}
+
+#can {
+    border:2px solid;
+}
+
+#last {
+    padding: 10px;
+    padding-left: 0;
+    display: flex;
+}
+
+#last p {
+    margin-bottom: 0px;
+    font-size: 2em;
+    margin: 10px;
+    margin-left: 0px;
+}
+
+
+
+
